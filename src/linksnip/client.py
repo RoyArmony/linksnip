@@ -21,14 +21,18 @@ class Client:
     
     Args:
         base_url: Base URL of the shortening service (e.g., "https://yourdomain.com")
-        api_key: API key for authentication
+        api_key: API key for authentication (format: lsnp_{project}_{random})
         timeout: Request timeout in seconds (default: 30)
     
     Examples:
-        >>> client = Client(base_url="https://yourdomain.com", api_key="your-key")
-        >>> url = client.shorten("https://example.com/long-url")
+        >>> client = Client(base_url="https://yourdomain.com", api_key="lsnp_myproject_abc123...")
+        >>> url = client.shorten(url="https://example.com/long-url", brand="mybrand")
         >>> print(url)
-        https://yourdomain.com/abc123
+        https://yourdomain.com/myproject/mybrand/abc123
+    
+    Note:
+        The project name is automatically extracted from your API key.
+        All short links follow the format: {project}/{brand}/{post_id}
     """
     
     def __init__(self, base_url: str, api_key: str, timeout: int = 30):
@@ -110,9 +114,7 @@ class Client:
     def shorten(
         self,
         url: str,
-        structure: Optional[str] = None,
-        project: Optional[str] = None,
-        brand: Optional[str] = None,
+        brand: str,
         post_id: Optional[str] = None,
         platforms: Optional[List[str]] = None
     ) -> Union[str, Dict[str, str]]:
@@ -121,9 +123,7 @@ class Client:
         
         Args:
             url: The long URL to shorten
-            structure: Link structure - "simple" (default) or "hierarchical"
-            project: Project name (required for hierarchical)
-            brand: Brand name (required for hierarchical)
+            brand: Brand name (e.g., 'isrotel', 'hilton')
             post_id: Custom post ID (optional, auto-generated if omitted)
             platforms: List of platform codes for attribution (e.g., ["fb", "ig", "tg"])
         
@@ -139,41 +139,41 @@ class Client:
             APIError: Other API errors
         
         Examples:
-            Simple shortening:
-            >>> url = client.shorten("https://example.com")
-            >>> print(url)
-            https://yourdomain.com/abc123
-            
-            With platform tracking:
-            >>> urls = client.shorten(
-            ...     "https://example.com",
-            ...     platforms=["fb", "ig", "tg"]
-            ... )
-            >>> print(urls["fb"])
-            https://yourdomain.com/abc123-fb
-            
-            Hierarchical structure:
+            Basic shortening:
             >>> url = client.shorten(
-            ...     "https://example.com",
-            ...     structure="hierarchical",
-            ...     project="<project-name>",
-            ...     brand="<brand-name>",
+            ...     url="https://example.com",
+            ...     brand="mybrand"
+            ... )
+            >>> print(url)
+            https://yourdomain.com/myproject/mybrand/abc123
+            
+            With custom post ID:
+            >>> url = client.shorten(
+            ...     url="https://example.com",
+            ...     brand="mybrand",
             ...     post_id="p381"
             ... )
             >>> print(url)
-            https://yourdomain.com/<project-name>/<brand-name>/p381
+            https://yourdomain.com/myproject/mybrand/p381
+            
+            With platform tracking:
+            >>> urls = client.shorten(
+            ...     url="https://example.com",
+            ...     brand="mybrand",
+            ...     platforms=["fb", "ig", "tg"]
+            ... )
+            >>> print(urls["fb"])
+            https://yourdomain.com/myproject/mybrand/abc123-fb
+        
+        Note:
+            The project name is automatically determined from your API key.
+            Links are created as: {project}/{brand}/{post_id}
         """
         # Build request payload
-        payload = {"url": url}
-        
-        if structure:
-            payload["structure"] = structure
-        
-        if project:
-            payload["project"] = project
-        
-        if brand:
-            payload["brand"] = brand
+        payload = {
+            "url": url,
+            "brand": brand
+        }
         
         if post_id:
             payload["post_id"] = post_id
