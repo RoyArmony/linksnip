@@ -42,7 +42,7 @@ print(short_url)
 client.shorten(
     dest_long_url,        # Required: The long URL to shorten
     brand=None,           # Optional: Brand name (e.g., "mybrand"). Omit for brand-less links.
-    post_id=None,         # Optional: Custom post ID. Auto-generated if omitted (see below)
+    post_id=None,         # Optional: Custom post ID. If omitted, auto-generated as a 6-char random ID (e.g. "Xy3KpL")
     platforms=None,       # Optional: List of platform codes, e.g. ["fb", "ig", "tg"]
 )
 ```
