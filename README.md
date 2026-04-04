@@ -44,7 +44,7 @@ Shortens a long URL and returns the new short URL as a string.
 ```python
 client.shorten(
     dest_long_url,        # Required: The long URL to shorten
-    brand=None,           # Optional: Brand/channel name (e.g. "isrotel"). Omit for brand-less links.
+    brand=None,           # Optional: Brand/channel name (e.g. "mybrand"). Omit for brand-less links.
     post_id=None,         # Optional: Custom short ID (e.g. "p001"). Auto-generated if omitted.
 )
 ```
