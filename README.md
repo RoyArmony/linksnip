@@ -158,6 +158,30 @@ List all links for your project. Returns up to `limit` links per call (max 1000)
 | `last_click` | only after first click | ISO timestamp of last click |
 | `clicks_per_suffix` | only after first click | Dict of per-suffix click counts, e.g. `{"base": 3, "fb": 2}`. `base` = clicks with no suffix. |
 
+**Example response:**
+
+```python
+{
+    "count": 42,
+    "list_complete": False,
+    "cursor": "AYcx...",
+    "links": [
+        {
+            "id":               "myproject:mybrand:p381",
+            "project":          "myproject",
+            "brand":            "mybrand",
+            "post_id":          "p381",
+            "url":              "https://example.com/some-long-url",
+            "clicks":           28,
+            "created_at":       "2026-04-01T10:00:00.000Z",
+            "last_click":       "2026-04-04T18:05:10.888Z",
+            "clicks_per_suffix": {"base": 15, "fb": 8, "tg": 5},
+        },
+        # ... more links
+    ]
+}
+```
+
 **Basic usage:**
 
 ```python
